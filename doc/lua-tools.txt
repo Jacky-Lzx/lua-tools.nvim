@@ -1,0 +1,90 @@
+*lua-tools.txt*	LuaLS libraries for Neovim configuration and Lua development.
+
+==============================================================================
+CONTENTS                                                        *lua-tools*
+
+  Quick start         |lua-tools-quickstart|
+  Commands            |lua-tools-commands|
+  Options             |lua-tools-options|
+  API                 |lua-tools-api|
+  Lifecycle           |lua-tools-lifecycle|
+  Troubleshooting     |lua-tools-troubleshooting|
+
+==============================================================================
+QUICK START                                              *lua-tools-quickstart*
+
+Requires Neovim 0.11+ and an independently configured lua_ls server.
+>lua
+  require('lua_tools').setup({})
+<
+Editing Neovim configuration automatically supplies selected plugin lua/
+directories to LuaLS, including cold and local checkouts. LuaDoc type annotations
+still describe the intended table shape. Sources are never executed or mounted.
+
+==============================================================================
+COMMANDS                                                   *lua-tools-commands*
+
+:LuaTools             Inspect copied per-client roots and library directories.
+:LuaTools refresh     Rescan module candidates and attached buffers.
+
+==============================================================================
+OPTIONS                                                     *lua-tools-options*
+
+Options use the lua_tools.Options LuaDoc type. Defaults:
+>lua
+  {
+    nvim = true,
+    debounce = 80,
+    max_bytes = 1048576,
+    config_roots = {},
+    library = {},
+  }
+<
+config_roots extends stdpath('config') and the parent of $MYVIMRC/init.lua.
+Detection canonicalizes paths and checks directory boundaries. plugins is an
+optional function returning selected entries with dir; by default an already
+loaded plugin_tools manager supplies status(), alongside runtimepath libraries.
+No manager is loaded just for discovery. nvim=false disables full plugin indexing.
+
+plugin_roots lists candidate checkout parents for literal require()/@module
+discovery. Defaults: data/plugin-tools and data/lazy. Runtimepath and available
+lazy.nvim declarations also supply candidates. library accepts directory strings
+or {path, words, mods, files} rules; words/files are Lua patterns and mods are
+literal module prefixes. ${3rd} is expanded by LuaLS.
+
+enabled defaults to skipping projects with .luarc.json/jsonc. true explicitly
+supplements them; false disposes the plugin; a function(root) selects clients.
+Existing server settings and libraries are preserved. See doc/guide.md for
+configuration, migration and custom provider examples.
+
+==============================================================================
+API                                                             *lua-tools-api*
+
+setup(opts)      Validate and copy configuration, replacing owned state.
+refresh(reset)   Recompute libraries; true invalidates text and path caches.
+info()           Return copied {enabled, workspaces}; each workspace includes
+                 client, root, nvim and library.
+dispose()        Remove listeners, timer, owned command and owned settings.
+
+==============================================================================
+LIFECYCLE                                                 *lua-tools-lifecycle*
+
+Only initialized lua_ls clients with attached Lua file buffers are augmented.
+Config clients receive existing selected plugin directories; other clients use
+module references and explicit library rules. Buffers sharing a client share its
+libraries. Changes are debounced and unchanged settings do not notify the server.
+Disposal preserves user replacements and unrelated settings. Repeated setup and
+disposal are supported. Requiring the public module does not register behavior.
+
+==============================================================================
+TROUBLESHOOTING                                      *lua-tools-troubleshooting*
+
+Use :LuaTools to inspect detection and libraries. Use :LuaTools refresh after
+installing plugins. Confirm LuaLS is attached and the plugin has a lua/ directory.
+Use config_roots for alternate Neovim configurations. LuaLS indexing may be
+limited by its preload limits or project configuration files.
+
+Run python3 tests/run.py default for offline checks, and integration,ui for real
+LuaLS tests. No tests download plugins or install language servers.
+
+vim:tw=78:ts=8:noet:ft=help:norl:

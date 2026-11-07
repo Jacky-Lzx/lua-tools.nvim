@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "default": [
+    "unit",
+    "format"
+  ],
+  "defaults": {},
+  "cases": [
+    {
+      "name": "setup_contract",
+      "suite": "unit",
+      "command": [
+        "{nvim}",
+        "--headless",
+        "-u",
+        "NONE",
+        "-i",
+        "NONE",
+        "--noplugin",
+        "-l",
+        "tests/setup_contract.lua"
+      ],
+      "files": [
+        "tests/setup_contract.lua"
+      ],
+      "timeout": 45
+    },
+    {
+      "name": "workspace",
+      "suite": "unit",
+      "command": [
+        "{nvim}",
+        "--headless",
+        "-u",
+        "NONE",
+        "-i",
+        "NONE",
+        "--noplugin",
+        "-l",
+        "tests/workspace.lua"
+      ],
+      "files": [
+        "tests/workspace.lua"
+      ],
+      "timeout": 45
+    },
+    {
+      "name": "auto_index",
+      "suite": "unit",
+      "command": [
+        "{nvim}",
+        "--headless",
+        "-u",
+        "NONE",
+        "-i",
+        "NONE",
+        "--noplugin",
+        "-l",
+        "tests/auto_index.lua"
+      ],
+      "files": [
+        "tests/auto_index.lua"
+      ],
+      "timeout": 45
+    },
+    {
+      "name": "runner",
+      "suite": "unit",
+      "command": [
+        "{python}",
+        "tests/runner_checks.py"
+      ],
+      "files": [
+        "tests/runner_checks.py"
+      ],
+      "timeout": 120
+    },
+    {
+      "name": "docs",
+      "suite": "unit",
+      "command": [
+        "{python}",
+        "tests/docs_checks.py",
+        "--nvim",
+        "{nvim}"
+      ],
+      "files": [
+        "tests/docs_checks.py"
+      ],
+      "timeout": 45
+    },
+    {
+      "name": "stylua",
+      "suite": "format",
+      "command": [
+        "stylua",
+        "--check",
+        "lua",
+        "tests"
+      ],
+      "files": [],
+      "requires": [
+        "exe:stylua"
+      ],
+      "timeout": 30
+    },
+    {
+      "name": "lua_ls",
+      "suite": "integration",
+      "command": [
+        "{nvim}",
+        "--headless",
+        "-u",
+        "NONE",
+        "-i",
+        "NONE",
+        "--noplugin",
+        "-l",
+        "tests/integration.lua"
+      ],
+      "files": [
+        "tests/integration.lua"
+      ],
+      "requires": [
+        "exe:lua-language-server"
+      ],
+      "timeout": 90
+    },
+    {
+      "name": "lua_ls_tui",
+      "suite": "ui",
+      "command": [
+        "{python}",
+        "tests/terminal.py"
+      ],
+      "files": [
+        "tests/terminal.py"
+      ],
+      "requires": [
+        "exe:lua-language-server"
+      ],
+      "timeout": 90
+    }
+  ],
+  "support": {
+    "tests/run.sh": "Shell entry point for tests/run.py"
+  },
+  "manual": {}
+}
